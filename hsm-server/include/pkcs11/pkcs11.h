@@ -719,16 +719,19 @@ typedef struct CK_RSA_PKCS_PSS_PARAMS {
 
 typedef struct CK_RSA_PKCS_PSS_PARAMS CK_PTR CK_RSA_PKCS_PSS_PARAMS_PTR;
 
-/* Function list */
+/* Notification and callback types */
+typedef CK_ULONG CK_NOTIFICATION;
+
+#define CKN_SURRENDER 0UL
+
 typedef CK_CALLBACK_FUNCTION(CK_RV, CK_NOTIFY)(
     CK_SESSION_HANDLE hSession,
     CK_NOTIFICATION event,
     CK_VOID_PTR pApplication
 );
 
-typedef CK_ULONG CK_NOTIFICATION;
-
-#define CKN_SURRENDER 0UL
+/* Special constant for unavailable information */
+#define CK_UNAVAILABLE_INFORMATION (~0UL)
 
 /* PKCS#11 Function prototypes */
 CK_DECLARE_FUNCTION(CK_RV, C_Initialize)(CK_VOID_PTR pInitArgs);

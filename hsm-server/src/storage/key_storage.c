@@ -10,6 +10,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Internal structure definition (opaque to header users)
+struct key_storage_ctx {
+    storage_backend_t backend;
+    uint8_t master_key[KEY_STORAGE_KEY_SIZE];
+    uint8_t salt[KEY_STORAGE_SALT_SIZE];
+    bool initialized;
+};
+
 // Stub implementation
 key_storage_ctx_t *key_storage_init(storage_backend_t backend,
                                    const uint8_t *pin,
@@ -27,6 +35,9 @@ key_storage_ctx_t *key_storage_init(storage_backend_t backend,
         return NULL;
     }
 
+    ctx->backend = backend;
+    ctx->initialized = true;
+
     return ctx;
 }
 
@@ -34,6 +45,8 @@ key_storage_ctx_t *key_storage_init(storage_backend_t backend,
 void key_storage_cleanup(key_storage_ctx_t *ctx) {
     fprintf(stderr, "key_storage_cleanup: Stub implementation\n");
     if (ctx) {
+        // Securely wipe master key
+        memset(ctx->master_key, 0, sizeof(ctx->master_key));
         free(ctx);
     }
 }
@@ -47,7 +60,8 @@ int key_storage_store(key_storage_ctx_t *ctx,
     fprintf(stderr, "key_storage_store: Stub implementation\n");
     fprintf(stderr, "  Handle: %lu\n", handle);
     fprintf(stderr, "  Key length: %zu\n", key_len);
-    fprintf(stderr, "  Algorithm: %s\n", metadata->algorithm);
+    fprintf(stderr, "  Key type: 0x%08lx\n", metadata->key_type);
+    fprintf(stderr, "  Label: %s\n", metadata->label);
 
     (void)ctx;
     (void)key_data;
