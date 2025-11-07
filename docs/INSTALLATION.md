@@ -23,7 +23,7 @@ Guide complet pour installer et configurer le système PKI avec HSM embarqué.
 ┌─────────────────────────────────────┐
 │   Poste Client (PC/Mac/Linux)       │
 │  ┌──────────────────────────────┐   │
-│  │  Application Cliente          │   │
+│  │  Application Cliente         │   │
 │  │  - Interface CLI/GUI         │   │
 │  │  - Client PKCS#11            │   │
 │  │  - Gestion clés/certs        │   │
