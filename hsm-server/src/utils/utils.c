@@ -9,7 +9,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
-#include <openssl/sha.h>
+#include <openssl/evp.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -250,10 +250,19 @@ CK_RV hsm_cleanup_slot(CK_SLOT_ID slot_id)
  */
 CK_RV hsm_hash_pin(const uint8_t *pin, size_t pin_len, uint8_t *hash_out)
 {
-    SHA256_CTX ctx;
-    SHA256_Init(&ctx);
-    SHA256_Update(&ctx, pin, pin_len);
-    SHA256_Final(hash_out, &ctx);
+    EVP_MD_CTX *ctx = EVP_MD_CTX_new();
+    if (!ctx) {
+        return CKR_HOST_MEMORY;
+    }
+
+    if (EVP_DigestInit_ex(ctx, EVP_sha256(), NULL) != 1 ||
+        EVP_DigestUpdate(ctx, pin, pin_len) != 1 ||
+        EVP_DigestFinal_ex(ctx, hash_out, NULL) != 1) {
+        EVP_MD_CTX_free(ctx);
+        return CKR_FUNCTION_FAILED;
+    }
+
+    EVP_MD_CTX_free(ctx);
     return CKR_OK;
 }
 

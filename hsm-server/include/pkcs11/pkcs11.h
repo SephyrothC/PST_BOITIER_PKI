@@ -733,6 +733,9 @@ typedef CK_CALLBACK_FUNCTION(CK_RV, CK_NOTIFY)(
 /* Special constant for unavailable information */
 #define CK_UNAVAILABLE_INFORMATION (~0UL)
 
+/* Forward declaration of CK_FUNCTION_LIST structure */
+struct CK_FUNCTION_LIST;
+
 /* PKCS#11 Function prototypes */
 CK_DECLARE_FUNCTION(CK_RV, C_Initialize)(CK_VOID_PTR pInitArgs);
 CK_DECLARE_FUNCTION(CK_RV, C_Finalize)(CK_VOID_PTR pReserved);

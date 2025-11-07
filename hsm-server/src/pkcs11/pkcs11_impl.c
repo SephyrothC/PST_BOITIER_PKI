@@ -162,7 +162,7 @@ CK_DEFINE_FUNCTION(CK_RV, C_GetInfo)(CK_INFO_PTR pInfo)
 /*
  * C_GetFunctionList - Get function pointer list
  */
-CK_DEFINE_FUNCTION(CK_RV, C_GetFunctionList)(CK_FUNCTION_LIST_PTR_PTR ppFunctionList)
+CK_DEFINE_FUNCTION(CK_RV, C_GetFunctionList)(struct CK_FUNCTION_LIST **ppFunctionList)
 {
     if (ppFunctionList == NULL_PTR) {
         return CKR_ARGUMENTS_BAD;
