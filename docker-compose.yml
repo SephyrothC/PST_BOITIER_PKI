@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  pki-hsm:
+    build:
+      context: ./hsm-server
+      dockerfile: Dockerfile
+    container_name: pki-hsm
+    hostname: pki-hsm
+    networks:
+      pki-network:
+        ipv4_address: 172.20.0.10
+    ports:
+      - "8443:8443"  # Port PKCS#11 over TLS
+    volumes:
+      - hsm-keys:/var/lib/pki-hsm/keys
+      - hsm-config:/var/lib/pki-hsm/config
+      - ./certs:/opt/certs:ro
+      - ./hsm-server/config:/etc/pki-hsm:ro
+    environment:
+      - HSM_PIN=${HSM_PIN:-changeme123456}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - TLS_CERT=/opt/certs/server.crt
+      - TLS_KEY=/opt/certs/server.key
+      - TLS_CA=/opt/certs/ca.crt
+      - LISTEN_PORT=8443
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 2 bash -c '</dev/tcp/localhost/8443' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  pki-client-dev:
+    build:
+      context: ./client-app
+      dockerfile: Dockerfile.dev
+    container_name: pki-client-dev
+    hostname: pki-client
+    networks:
+      pki-network:
+        ipv4_address: 172.20.0.20
+    ports:
+      - "3000:3000"  # Frontend dev server
+      - "5173:5173"  # Vite HMR
+    volumes:
+      - ./client-app:/app
+      - /app/node_modules
+      - ./certs:/app/certs:ro
+    environment:
+      - HSM_HOST=pki-hsm
+      - HSM_PORT=8443
+      - TLS_CLIENT_CERT=/app/certs/client.crt
+      - TLS_CLIENT_KEY=/app/certs/client.key
+      - TLS_CA=/app/certs/ca.crt
+      - NODE_ENV=development
+    depends_on:
+      pki-hsm:
+        condition: service_healthy
+    stdin_open: true
+    tty: true
+
+networks:
+  pki-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+    driver_opts:
+      com.docker.network.bridge.name: br-pki
+
+volumes:
+  hsm-keys:
+    driver: local
+  hsm-config:
+    driver: local

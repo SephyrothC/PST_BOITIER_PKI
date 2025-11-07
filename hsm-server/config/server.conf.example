@@ -1,0 +1,95 @@
+# PST PKI HSM Server Configuration
+
+[server]
+# Listen address (0.0.0.0 = all interfaces)
+listen_address = 0.0.0.0
+port = 8443
+
+# TLS Configuration
+tls_enabled = true
+tls_cert = /opt/certs/server.crt
+tls_key = /opt/certs/server.key
+tls_ca = /opt/certs/ca.crt
+
+# Require client certificate (mTLS)
+require_client_cert = true
+verify_client_cert = true
+
+# Allowed cipher suites (TLS 1.3 recommended)
+tls_ciphers = TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256
+
+# Minimum TLS version (1.2 or 1.3)
+tls_min_version = 1.3
+
+[pkcs11]
+# PKCS#11 Token label
+token_label = PST HSM Token
+
+# Storage directory for keys
+storage_dir = /var/lib/pki-hsm/keys
+
+# Storage encryption
+storage_encryption = aes-256-gcm
+storage_pbkdf2_iterations = 600000
+
+# Token PIN (can be overridden by HSM_PIN environment variable)
+# IMPORTANT: Change this in production!
+# token_pin = changeme123456
+
+[security]
+# Maximum concurrent clients
+max_clients = 10
+
+# Session timeout (seconds)
+session_timeout = 300
+
+# PIN retry limit
+pin_retry_limit = 3
+
+# Rate limiting (requests per second per client)
+rate_limit = 100
+
+# Enable request logging
+audit_log = true
+audit_log_file = /var/log/pki-hsm/audit.log
+
+[logging]
+# Log level: ERROR, WARN, INFO, DEBUG
+log_level = INFO
+
+# Log file
+log_file = /var/log/pki-hsm/server.log
+
+# Log to console
+log_console = true
+
+# Include timestamps
+log_timestamps = true
+
+[performance]
+# Worker threads for crypto operations
+crypto_threads = 4
+
+# Enable hardware acceleration if available
+hw_acceleration = true
+
+# Key cache size (number of keys)
+key_cache_size = 100
+
+[features]
+# Enable specific PKCS#11 mechanisms
+enable_rsa_2048 = true
+enable_rsa_4096 = true
+enable_ec_p256 = true
+enable_ec_p384 = true
+enable_ec_p521 = true
+
+# Enable signature algorithms
+enable_rsa_pkcs = true
+enable_rsa_pss = true
+enable_ecdsa = true
+
+# Enable advanced features
+enable_key_generation = true
+enable_random_generation = true
+enable_object_management = true
