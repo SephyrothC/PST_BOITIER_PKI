@@ -58,7 +58,7 @@ EXPOSE 8443
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
-    CMD timeout 2 bash -c '</dev/tcp/localhost/8443' || exit 1
+    CMD timeout 2 sh -c 'echo > /dev/tcp/localhost/8443' 2>/dev/null || exit 1
 
 WORKDIR /var/lib/pki-hsm
 
