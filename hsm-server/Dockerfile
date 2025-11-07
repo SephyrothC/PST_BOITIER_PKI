@@ -16,6 +16,7 @@ WORKDIR /build
 COPY CMakeLists.txt ./
 COPY include/ ./include/
 COPY src/ ./src/
+COPY tests/ ./tests/
 
 # Build
 RUN mkdir build && cd build && \
