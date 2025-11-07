@@ -1,0 +1,32 @@
+{
+  "name": "pst-hsm-client",
+  "version": "1.0.0",
+  "description": "PST HSM Client Application - Modern UI for PKCS#11 operations",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/cli.js",
+    "dev": "nodemon src/cli.js",
+    "test": "jest",
+    "lint": "eslint src/"
+  },
+  "keywords": [
+    "pkcs11",
+    "hsm",
+    "cryptography",
+    "pki"
+  ],
+  "author": "PST Cryptographic Systems",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^11.0.0",
+    "inquirer": "^9.2.0",
+    "chalk": "^5.3.0",
+    "ora": "^7.0.0",
+    "table": "^6.8.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.45.0",
+    "jest": "^29.6.0",
+    "nodemon": "^3.0.0"
+  }
+}
