@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   pki-hsm:
     build:
@@ -41,7 +39,8 @@ services:
   pki-client-dev:
     build:
       context: ./client-app
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
+      target: development
     container_name: pki-client-dev
     hostname: pki-client
     networks:
